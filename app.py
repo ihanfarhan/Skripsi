@@ -87,7 +87,7 @@ def send_response(in_queue_2):
         logging.info(json_response_rec)
         json_response = json.loads(json_response_rec)
         chat_id = json_response.get('chat_id')
-        bot.sendMessage(chat_id, json_response_rec)
+        bot.sendMessage(chat_id, json_response.get('response'))
         logging.info('----------END----------')
 
 
