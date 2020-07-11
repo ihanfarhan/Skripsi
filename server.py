@@ -1,11 +1,44 @@
 import json
 import base64
 import socket
+import requests
 import threading
+import numpy as np
 import logging.config
+import tensorflow as tf
+import efficientnet.tfkeras
+
+from PIL import Image
+from io import BytesIO
 from queue import Queue
+from tensorflow.keras.models import load_model
 
 logging.config.fileConfig('public/config/logging.config.ini')
+
+# Parameters
+input_size = (150,150)
+
+#define input shape
+channel = (3,)
+input_shape = input_size + channel
+
+#define labels
+labels = ['fiber', 'lan', 'listrik', 'normal']
+
+
+# ada 2 cara load model, jika cara pertama berhasil maka bisa lasngusng di lanjutkan ke fungsi prediksi
+
+MODEL_PATH = 'model.h5'
+model = load_model(MODEL_PATH,compile=False)
+
+
+def preprocess(img,input_size):
+    nimg = img.convert('RGB').resize(input_size, resample= 0)
+    img_arr = (np.array(nimg))/255
+    return img_arr
+
+def reshape(imgs_arr):
+    return np.stack(imgs_arr, axis=0)
 
 
 # parse the data
@@ -42,12 +75,17 @@ def recv_send_img(in_q):
             logging.debug('thread %s is running...' % threading.current_thread().name)
             logging.info('----------Got Connection From {}-------'.format(client_address))
             json_data = json.loads(load_data(client_socket))
-            print (json_data)
+            # read image
+            im = Image.open(json_data.get('image_name'))
+            X = preprocess(im,input_size)
+            X = reshape([X])
+            y = model.predict(X)
+
             chat_id = json_data['chat_id']
             json_str = json.dumps({
                 'status': 200,
                 'chat_id': chat_id,
-                'response': 'success'
+                'response': labels[np.argmax(y)]
             })
             wrapped_msg = '{}\n{}'.format(len(json_str), json_str)
             client_socket.send(wrapped_msg.encode('utf-8'))
