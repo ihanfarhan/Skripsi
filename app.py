@@ -51,17 +51,32 @@ def handle(msg):
     logging.info('----------Got Connection From User [{}]-------'.format(chat_id))
     file_name = get_filename(str(chat_id))
     img_path = IMG_PATH + file_name
+    command = msg['text']
     logging.debug('content_type is: {}'.format(content_type))
     logging.debug('chat_id is: {}'.format(chat_id))
-
+    
     if content_type == 'photo':
         logging.info('----------Download Image From Telegram----------')
         bot.download_file(msg['photo'][-1]['file_id'], img_path)
         wrapped_msg = serialize(img_path, chat_id, file_name)
         queue_1.put(wrapped_msg)
-        # logging.debug('Queue 1 has been put')
-
-
+        # logging.debug('Queue 1 has been put')   
+     
+    elif command == '/start':
+        bot.sendMessage (chat_id, str("Selamat datang di layanan Customer Service Kami, silahkan tekan menu atau ketik tanda / untuk melakukan interaksi dengan kami. Terimakasih"))
+    
+    elif command == '/keluhan':
+        bot.sendMessage (chat_id, str("Silahkan sampaikan keluhan terkait Layanan Internet Kami. Tidak lupa untuk menyampaikan foto indikator perangkat agar dapat kami tangani dengan tepat"))
+        
+    elif command == '/pertanyaan':
+        bot.sendMessage (chat_id, str("Silahkan sampaikan pertanyaan anda seputar layanan dan produk kami dengan format Nama : E-Mail : Nomor Kontak : Pertanyaan :Terimakasih telah menyampaikan pertanyaan, kami akan segera menjawab pertanyaan anda. Mohon ditunggu"))
+    
+    elif command == '/saran':
+        bot.sendMessage (chat_id, str("Silahkan sampaikan saran anda seputar layanan dan produk kami dengan format Nama : E-Mail : Nomor Kontak : Kritik & Saran :Terimakasih telah menyampaikan kritik dan saran, kami akan menampung kritik dan saran anda demi meningkatkan kualitas layanan kami. Terimakasih telah mempercayai kami untuk melayani anda."))
+    
+    elif command == '/kontak':
+        bot.sendMessage (chat_id, str("PT Jabarmaya Kriya SentosaWebsite : www.jabarmaya.net.id Office : Jalan Encep Kartawiria No.202 Kota Cimahi 40521Representative Office : Jalan Peta No.168E Kota Bandung 40231Telepon : 022-6613539Email : info@jabarmaya.net.id, sales@jabarmaya.net.idKontak NOC : 0898-1111-323"))
+      
 # #  Thread 2 ­ Client Thread
 def send_recv_img(in_queue_1, out_queue_2):
     while True:
@@ -82,7 +97,7 @@ def send_recv_img(in_queue_1, out_queue_2):
 def send_response(in_queue_2):
     while True:
         # logging.debug('thread %s is running...' % threading.current_thread().name)
-        logging.info('damn')
+        logging.info('test')
         json_response_rec = in_queue_2.get()
         logging.info(json_response_rec)
         json_response = json.loads(json_response_rec)
