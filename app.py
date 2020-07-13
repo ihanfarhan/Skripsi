@@ -47,13 +47,17 @@ def serialize(file_path, chat_id, image_name):
 
 #  Thread 1 ­ Receiving Messages
 def handle(msg):
+    command = ''
     content_type, chat_type, chat_id = telepot.glance(msg)
     logging.info('----------Got Connection From User [{}]-------'.format(chat_id))
     file_name = get_filename(str(chat_id))
     img_path = IMG_PATH + file_name
-    command = msg['text']
-    logging.debug('content_type is: {}'.format(content_type))
-    logging.debug('chat_id is: {}'.format(chat_id))
+
+    if 'text' in msg:
+        command = msg['text']
+
+    logging.info('content_type is: {}'.format(content_type))
+    logging.info('chat_id is: {}'.format(chat_id))
     
     if content_type == 'photo':
         logging.info('----------Download Image From Telegram----------')
