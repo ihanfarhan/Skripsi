@@ -42,6 +42,7 @@ scikit-image==0.17.2
 scipy==1.4.1
 six==1.15.0
 telepot==12.7
+telegram==0.0.1
 tensorboard==2.2.2
 tensorboard-plugin-wit==1.7.0
 tensorflow==2.2.0
