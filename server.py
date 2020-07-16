@@ -16,7 +16,7 @@ from tensorflow.keras.models import load_model
 logging.config.fileConfig('public/config/logging.config.ini')
 
 # Parameters
-input_size = (150,150)
+input_size = (224,224)
 
 #define input shape
 channel = (3,)

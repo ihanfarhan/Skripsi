@@ -10,6 +10,7 @@ import requests
 import threading
 import logging.config
 
+from telegram.ext import ParseMode
 from queue import Queue
 from telepot.loop import MessageLoop
 
@@ -76,7 +77,12 @@ def handle(msg):
         bot.sendMessage (chat_id, str("Silahkan sampaikan pertanyaan anda seputar layanan dan produk kami dengan format Nama : E-Mail : Nomor Kontak : Pertanyaan :Terimakasih telah menyampaikan pertanyaan, kami akan segera menjawab pertanyaan anda. Mohon ditunggu"))
     
     elif command == '/saran':
-        bot.sendMessage (chat_id, str("Silahkan sampaikan saran anda seputar layanan dan produk kami dengan format Nama : E-Mail : Nomor Kontak : Kritik & Saran :Terimakasih telah menyampaikan kritik dan saran, kami akan menampung kritik dan saran anda demi meningkatkan kualitas layanan kami. Terimakasih telah mempercayai kami untuk melayani anda."))
+        bot.sendMessage (chat_id, str("Silahkan sampaikan saran anda seputar layanan dan produk kami dengan format \
+        *Nama :* \
+        *E-Mail :* \
+        *Nomor Kontak :* \
+        *Kritik & Saran :*\
+        Terimakasih telah menyampaikan kritik dan saran, kami akan menampung kritik dan saran anda demi meningkatkan kualitas layanan kami. Terimakasih telah mempercayai kami untuk melayani anda.",parse_mode=telegram.ParseMode.MARKDOWN_V2))
     
     elif command == '/kontak':
         bot.sendMessage (chat_id, str("PT Jabarmaya Kriya SentosaWebsite : www.jabarmaya.net.id Office : Jalan Encep Kartawiria No.202 Kota Cimahi 40521Representative Office : Jalan Peta No.168E Kota Bandung 40231Telepon : 022-6613539Email : info@jabarmaya.net.id, sales@jabarmaya.net.idKontak NOC : 0898-1111-323"))
@@ -106,9 +112,11 @@ def send_response(in_queue_2):
         logging.info(json_response_rec)
         json_response = json.loads(json_response_rec)
         chat_id = json_response.get('chat_id')
+        to_chat_id = int(926422618)
         bot.sendMessage(chat_id, json_response.get('response'))
+        bot.forwardMessage(to_chat_id, bot_msg['chat']['id'], bot_msg['message_id'])
         logging.info('----------END----------')
-
+            
 
 if __name__ == "__main__":
     bot = telepot.Bot('1018451310:AAEpfheow1c0e38YpTGCRAevdaAWePV8vjU')
